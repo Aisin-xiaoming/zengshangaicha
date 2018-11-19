@@ -7,7 +7,7 @@
         </div>
         <div class="container">
         	<!-- 添加按钮 -->
-        	<el-button type="primary" icon="el-icon-plus" class="red" @click="showAdd">添加</el-button>
+        	<el-button type="primary" icon="el-icon-plus" class="red" @click="showAdd()">添加</el-button>
 		    <el-table
 		      :data="kindList"
 		      style="width: 100%">
@@ -22,9 +22,25 @@
 		        width="180">
 		      </el-table-column>
 		      <el-table-column
-		        prop="goodsKind.img"
-		        label="img">
+                prop="goodsKind.img"
+                label="img">
+              </el-table-column>
+              <el-table-column
+		        prop="list"
+		        label="子类标签">
+                 <template scope="scope">
+                    <el-tag
+                      v-for="tag in scope.row.list"
+                      :disable-transitions="false"
+                      closable
+                      @close="handleDelete(tag.id)"
+                     >
+                        {{tag.ctitle}}
+                    </el-tag>
+                    <el-button  class="button-new-tag" size="small" @click="showAdd(scope.row.goodsKind.id)">+ 添加一个子类</el-button>
+                    </template>
 		      </el-table-column>
+
 		      <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-edit"@click="handleEdit(scope.row)">编辑</el-button>
@@ -68,7 +84,9 @@
 </template>
 
 <script>
-import {getKindList,delKind,addKind,saveEditKind} from '@/api/1biaoge'
+// import {getKindList,delKind,addKind,saveEditKind} from '@/api/1biaoge'
+import kindApi from '@/api/1biaoge.js'
+
     export default {
              data(){
             return{
@@ -102,18 +120,28 @@ import {getKindList,delKind,addKind,saveEditKind} from '@/api/1biaoge'
     	 methods: {
             //kind数据获取
              getKindList(){
-                getKindList()//不加this指的是引用的api下的接口。
+                kindApi.getKindList()//不加this指的是引用的api下的接口。
                 .then(res=>this.kindList=res.data.data)
             },
             
-           //shanchu
+           //shanchu弹框并且传值;
            handleDelete(id,flag) {
                 this.delId = id;
+                if(flag){
+                    //为true的话 就认为是子类打开的删除。
+                    this.kindDelType = 1 
+                }else{
+                    //为false的话 就认为是父类打开的删除。
+                    this.kindDelType = 0 
+                }
                 this.delVisible = true
            },
            //删除的确认按钮
            deleteKind(){
-                delKind(this.delId,this.kindDelType)
+                kindApi.delKind({
+                   'id':this.delId,
+                    'type': this.kindDelType
+                })
                 .then(res=>{
                     // console.log(res)
                     if(res.data.code==='S'){
@@ -137,7 +165,7 @@ import {getKindList,delKind,addKind,saveEditKind} from '@/api/1biaoge'
            //编辑确定按钮
            saveEditKind(){
             this.form.id=this.issaveEditID
-            saveEditKind({goodsKind:this.form})
+            kindApi.saveEditKind({goodsKind:this.form})
             .then(res=>{
                 if(res.data.code==='S'){
                     this.$message.success(`chenggong`);
@@ -152,6 +180,7 @@ import {getKindList,delKind,addKind,saveEditKind} from '@/api/1biaoge'
 
             //显示添加
             showAdd(id){
+                // console.log(id)
                 //每次打开添加输入框为空
                this.form={
                     title: '',
@@ -160,11 +189,13 @@ import {getKindList,delKind,addKind,saveEditKind} from '@/api/1biaoge'
                 },
                 this.editVisible = true;
                  this.issaveEdit = false;
-
+                 if(id){
+                    this.form.pid = id//如果是添加子类，那么把父类ID传过来。
+                }
             },
             //tianjia确定按钮
              addKind(){
-                addKind({goodsKind:this.form})
+                kindApi.addKind({goodsKind:this.form})
                 .then(res=>{
                     if(res.data.code==='S'){
                         this.$message.success(`添加成功`);
