@@ -99,6 +99,11 @@ export default new Router({
                     path:'/1biaoge',
                     component: resolve => require(['../components/page/1biaoge.vue'], resolve),
                     meta:{title:'1biaoge'}
+                },         
+                {
+                    path:'/2list',
+                    component: resolve => require(['../components/page/2list.vue'], resolve),
+                    meta:{title:'2list'}
                 },                  
             ]
         },

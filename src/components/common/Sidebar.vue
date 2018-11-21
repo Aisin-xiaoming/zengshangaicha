@@ -64,6 +64,11 @@
                         title: '我的表格'
                     },
                     {
+                        icon: 'el-icon-loading',
+                        index: '2list',
+                        title: '我的list'
+                    },
+                    {
                         icon: 'el-icon-lx-copy',
                         index: 'tabs',
                         title: 'tab选项卡'

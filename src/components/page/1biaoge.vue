@@ -1,4 +1,5 @@
 <template>
+    <!-- 第一次简单增删改查 -->
     <div class="table">
         <div class="crumbs">
             <el-breadcrumb separator="/">
@@ -37,6 +38,7 @@
                      >
                         {{tag.ctitle}}
                     </el-tag>
+                    
                     <el-button  class="button-new-tag" size="small" @click="showAdd(scope.row.goodsKind.id)">+ 添加一个子类</el-button>
                     </template>
 		      </el-table-column>
