@@ -12,7 +12,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/bufanapi':{
-          target:'http://192.168.0.109',
+          target:'http://192.168.0.118',
           changeOrigin:true,
           pathRewrite:{
               '^/bufanapi':''
